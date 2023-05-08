@@ -15,7 +15,6 @@ public class MoveTilesVsCpu : MonoBehaviour {
     private int tapCount = 0;
     public float strength = 0.1f;
     public float resStrength = 0.1f;
-    private float Oclickrate = 0f;
     private float updateTickRate;
 
     private void Start() {

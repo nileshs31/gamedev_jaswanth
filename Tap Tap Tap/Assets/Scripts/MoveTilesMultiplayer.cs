@@ -14,7 +14,6 @@ public class MoveTilesMultiplayer : NetworkBehaviour {
 
     public float strength = 0.1f;
     private int tapCount = 0;
-    private float updateTimer = 1f;
     private Vector2 dummyTransform;
 
     public override void OnNetworkSpawn() {

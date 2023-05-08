@@ -22,41 +22,57 @@ public class LobbyManager : MonoBehaviour {
     private float pollingTimer;
     [SerializeField] private Button create;
     [SerializeField] private Button join;
-    [SerializeField] private Button list;
+    //[SerializeField] private Button list;
     [SerializeField] private Button start_game;
     [SerializeField] private Button playersList;
     [SerializeField] private Button joinCodeLobby;
     [SerializeField] private TMP_InputField joinCodeInput;
+    [SerializeField] private TMP_Text lobbyCode;
+    [SerializeField] private Toggle checkPrivate;
 
 
     public void disableAll() {
         create.gameObject.SetActive(false);
         join.gameObject.SetActive(false);
-        list.gameObject.SetActive(false);
+        //list.gameObject.SetActive(false);
+        joinCodeInput.gameObject.SetActive(false);
+        joinCodeLobby.gameObject.SetActive(false);
+        checkPrivate.gameObject.SetActive(false);
     }
 
     public void enableAll() {
         create.gameObject.SetActive(true);
         join.gameObject.SetActive(true);
-        list.gameObject.SetActive(true);
+        //list.gameObject.SetActive(true);
+        joinCodeInput.gameObject.SetActive(true);
+        joinCodeLobby.gameObject.SetActive(true);
+        checkPrivate.gameObject.SetActive(true);
     }
 
     private async void Start() {
         disableAll();
         start_game.gameObject.SetActive(false);
         playersList.gameObject.SetActive(false);
+        lobbyCode.gameObject.SetActive(false);
+        
 
         await UnityServices.InitializeAsync();
         AuthenticationService.Instance.SignedIn += () => {
             Debug.Log("Signed In! " + AuthenticationService.Instance.PlayerId);
             enableAll();
+            
         };
-        //Authenticate anonymous
-        await AuthenticationService.Instance.SignInAnonymouslyAsync();
+        if (AuthenticationService.Instance.IsSignedIn) {
+            enableAll();
+        }
+        else {
+            //Authenticate anonymous
+            await AuthenticationService.Instance.SignInAnonymouslyAsync();
+        }
 
         create.onClick.AddListener(CreateLobby);
         join.onClick.AddListener(joinLobby);
-        list.onClick.AddListener(ListLobbies);
+        //list.onClick.AddListener(ListLobbies);
         start_game.onClick.AddListener(StartGame);
         playersList.onClick.AddListener(listplayers);
         joinCodeLobby.onClick.AddListener(joinCodeLobbyHandler);
@@ -104,8 +120,8 @@ public class LobbyManager : MonoBehaviour {
         try {
             string lobbyName = "myLobby";
             int maxplayers = 2;
-
             CreateLobbyOptions options = new CreateLobbyOptions {
+                IsPrivate = checkPrivate.isOn,
                 Data = new Dictionary<string, DataObject> {
                     { "KEY_START_GAME", new DataObject(DataObject.VisibilityOptions.Member,"0")}
                 }
@@ -114,10 +130,11 @@ public class LobbyManager : MonoBehaviour {
             Lobby lobby = await LobbyService.Instance.CreateLobbyAsync(lobbyName, maxplayers,options);
             hostLobby = lobby;
             joinedLobby = hostLobby;
-            Debug.Log("Lobby name : " + lobby.Name + " ; lobbyCode : " + lobby.LobbyCode);
             disableAll();
             start_game.gameObject.SetActive(true);
             playersList.gameObject.SetActive(true);
+            lobbyCode.gameObject.SetActive(true);
+            lobbyCode.text = joinedLobby.LobbyCode;
         }
         catch (LobbyServiceException e) {
             Debug.Log(e.Message);
@@ -144,7 +161,10 @@ public class LobbyManager : MonoBehaviour {
 
     public async void joinLobby() {
         try {
-            QueryLobbiesOptions options = null;
+            QueryLobbiesOptions options = new QueryLobbiesOptions();
+            options.Filters = new List<QueryFilter> {
+                new QueryFilter(QueryFilter.FieldOptions.AvailableSlots,"1",QueryFilter.OpOptions.EQ),
+            };
             QueryResponse queryResponse = await Lobbies.Instance.QueryLobbiesAsync(options);
             if (queryResponse.Results.Count > 0) {
                 Lobby lobby = await Lobbies.Instance.JoinLobbyByIdAsync(queryResponse.Results[0].Id);
@@ -174,8 +194,8 @@ public class LobbyManager : MonoBehaviour {
 
     public void joinCodeLobbyHandler() {
         string joinCode = joinCodeInput.text;
-
-        //joinLobbywithCode(joinCode);
+        Debug.Log(joinCode);
+        joinLobbywithCode(joinCode);
     }
 
     public async void quickjoin() {
@@ -212,7 +232,7 @@ public class LobbyManager : MonoBehaviour {
     }
 
     public async void StartGame() {
-        if (playerCount() > 0) {
+        if (playerCount() == 2) {
             try {
                 string relayCode = await CreateRelay();
                 Debug.Log("no error in creating! relayCode is " + relayCode);
@@ -224,6 +244,7 @@ public class LobbyManager : MonoBehaviour {
                 joinedLobby = hostLobby;
                 start_game.gameObject.SetActive(false);
                 playersList.gameObject.SetActive(false);
+                lobbyCode.gameObject.SetActive(false);
             }
             catch (LobbyServiceException e) {
                 Debug.Log(e);

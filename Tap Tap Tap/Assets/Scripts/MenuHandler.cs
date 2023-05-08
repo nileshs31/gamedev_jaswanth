@@ -9,8 +9,13 @@ public class MenuHandler : MonoBehaviour {
     [SerializeField] private Button quit_btn;
     [SerializeField] private Button vscpu;
     [SerializeField] private Button mulitplayer;
+    [SerializeField] private GameObject settings;
+    [SerializeField] private Button settings_btn;
 
     private void Start() {
+
+        settings.gameObject.SetActive(false);
+        settings_btn.onClick.AddListener(settings_btn_fn);
         localvs.onClick.AddListener(localVs);
         quit_btn.onClick.AddListener(quit);
         vscpu.onClick.AddListener(vsCpu);
@@ -18,13 +23,13 @@ public class MenuHandler : MonoBehaviour {
     }
 
     public void localVs() {
-        // change the scene to game.
-        // beware of coroutines..
-        SceneManager.LoadScene("localVs");
+        GlobalDataHandler.Instance.gameMode = 1; // Just to handle offline game modes in a single scene
+        SceneManager.LoadScene("local");
     }
 
     public void vsCpu() {
-        SceneManager.LoadScene("cpuVs");
+        GlobalDataHandler.Instance.gameMode = 0; // Just to handle offline game modes in a single scene
+        SceneManager.LoadScene("local");
     }
 
     public void multiplayerOnline() {
@@ -33,5 +38,9 @@ public class MenuHandler : MonoBehaviour {
 
     public void quit() {
         Application.Quit();
+    }
+
+    public void settings_btn_fn() {
+        settings.gameObject.SetActive(true);
     }
 }
