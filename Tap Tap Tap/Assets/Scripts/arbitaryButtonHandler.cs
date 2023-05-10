@@ -16,4 +16,8 @@ public class arbitaryButtonHandler : MonoBehaviour {
     private void back() {
         SceneManager.LoadScene("Menu");
     }
+
+    public void tapAnyWhere() {
+        SceneManager.LoadScene("Menu");
+    }
 }

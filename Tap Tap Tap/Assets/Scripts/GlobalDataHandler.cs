@@ -1,6 +1,6 @@
-using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using System;
 
 public class GlobalDataHandler : MonoBehaviour {
     public static GlobalDataHandler Instance {
@@ -9,13 +9,16 @@ public class GlobalDataHandler : MonoBehaviour {
     }
 
     private void Awake() {
+        Debug.Log("Script : GlobalDataHandler");
+
         DontDestroyOnLoad(transform.gameObject);
         Instance = this;
     }
 
     private void Start() {
         loadData();
-        SceneManager.LoadScene("Menu");
+        Debug.Log("Loading menu now ...");
+        //SceneManager.LoadScene(1);
     }
 
     // Add Data here
@@ -37,7 +40,7 @@ public class GlobalDataHandler : MonoBehaviour {
     // save data offline
     public void saveData() {
         try {
-            string playerData = JsonUtility.ToJson(this);
+            string playerData = JsonUtility.ToJson(this.convertThis());
             Debug.Log(Application.persistentDataPath);
             System.IO.File.WriteAllText(Application.persistentDataPath + "/playerData.json", playerData);
         }
@@ -56,7 +59,11 @@ public class GlobalDataHandler : MonoBehaviour {
         //Destroy(temp);
         try {
             string playerData = System.IO.File.ReadAllText(Application.persistentDataPath + "/playerData.json");
-            JsonUtility.FromJsonOverwrite(playerData, this);
+            PlayerDataClass pdc = JsonUtility.FromJson<PlayerDataClass>(playerData);
+            this.playerName = pdc.PlayerName;
+            this.userTile = pdc.UserTile;
+            this.gameMode = pdc.GameMode;
+            this.difficulty = pdc.Difficulty;
         }
         catch (ArgumentException e) {
             Debug.Log(e);
@@ -65,5 +72,9 @@ public class GlobalDataHandler : MonoBehaviour {
 
     private void OnApplicationQuit() {
         saveData();
+    }
+
+    private PlayerDataClass convertThis() {
+        return new PlayerDataClass(this.gameMode, this.difficulty, this.userTile, this.playerName);
     }
 }

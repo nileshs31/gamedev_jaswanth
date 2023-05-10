@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -13,6 +11,7 @@ public class MoveTilesOffline : MonoBehaviour {
     [SerializeField] private GameObject opponentGoal;
     [SerializeField] private TMP_Text winnerDisplay;
     [SerializeField] private Button goBackToMenu;
+    [SerializeField] private Image player_tile;
 
     private float maxTickDelay = 0.5f;
 
@@ -21,10 +20,12 @@ public class MoveTilesOffline : MonoBehaviour {
 
     private float strength = 0.1f;
     private float updateTickRate;
-    private int dif;
+    private float dif;
     private bool isWinnerDisplayed = false;
+    private float tuneFactor = 0.5f;
 
     private void Start() {
+        player_tile.sprite = GlobalDataHandler.Instance.tiles[GlobalDataHandler.Instance.userTile];
         winnerDisplay.gameObject.SetActive(false);
         goBackToMenu.gameObject.SetActive(false);
         player.onClick.AddListener(() => {
@@ -33,7 +34,7 @@ public class MoveTilesOffline : MonoBehaviour {
         updateTickRate = maxTickDelay;
         if (gdh.gameMode == 0) {
             // copy start of vsCPU
-            dif = gdh.difficulty;
+            dif = gdh.difficulty*tuneFactor;
         } else if (gdh.gameMode == 1) {
             // copy start of vsLocal
             dif = 1;
@@ -44,9 +45,12 @@ public class MoveTilesOffline : MonoBehaviour {
     }
 
     private void Update() {
+        if (!AdLoadnShow.Instance.isAdCompleted()) return;
         if (gameEnd()) {
             if (!isWinnerDisplayed) {
                 // pop a winner window and return to menu;
+                playerGoal.gameObject.SetActive(false);
+                opponentGoal.gameObject.SetActive(false);
                 if (this.transform.position.y >= playerGoal.transform.position.y) winnerDisplay.text = "You Won :)";
                 else winnerDisplay.text = "You lost :(";
                 winnerDisplay.gameObject.SetActive(true);
