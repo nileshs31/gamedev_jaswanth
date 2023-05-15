@@ -14,6 +14,7 @@ public class MoveTilesMultiplayer : NetworkBehaviour {
     [SerializeField] private TMP_Text winnerDisplay;
     [SerializeField] private Button goBackToMenu;
     [SerializeField] private GameObject winCond;
+    [SerializeField] private Image winBackGround;
     private bool isWinnerDisplayed = false;
 
     private float strength = 0.4f;
@@ -31,6 +32,8 @@ public class MoveTilesMultiplayer : NetworkBehaviour {
         //opponentGoal.gameObject.SetActive(false);
         winnerDisplay.gameObject.SetActive(false);
         goBackToMenu.gameObject.SetActive(false);
+        winBackGround.gameObject.SetActive(false);
+
         goBackToMenu.onClick.AddListener(() => {
             SceneManager.LoadScene("Menu");
         });
@@ -60,8 +63,9 @@ public class MoveTilesMultiplayer : NetworkBehaviour {
                 //playerGoal.gameObject.SetActive(false);
                 //opponentGoal.gameObject.SetActive(false);
                 // get who the winner is!!
-                if ((winner.Value == 'h' && IsHost) || (winner.Value == 'c' && !IsHost && IsClient)) winnerDisplay.text = "You Won :)";
-                else winnerDisplay.text = "You lost :(";
+                if ((winner.Value == 'h' && IsHost) || (winner.Value == 'c' && !IsHost && IsClient)) winnerDisplay.text = "YOU WON";
+                else winnerDisplay.text = "YOU LOST";
+                winBackGround.gameObject.SetActive(true);
                 winnerDisplay.gameObject.SetActive(true);
                 goBackToMenu.gameObject.SetActive(true);
                 isWinnerDisplayed = true;

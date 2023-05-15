@@ -12,13 +12,14 @@ public class MoveTilesOffline : MonoBehaviour {
     [SerializeField] private TMP_Text winnerDisplay;
     [SerializeField] private Button goBackToMenu;
     [SerializeField] private Image player_tile;
+    [SerializeField] private Image winBackGround;
 
     private float maxTickDelay = 0.5f;
 
     private int PtapCount = 0;
     private int OtapCount = 0;
 
-    private float strength = 0.1f;
+    private float strength = 0.4f;
     private float updateTickRate;
     private float dif;
     private bool isWinnerDisplayed = false;
@@ -28,6 +29,8 @@ public class MoveTilesOffline : MonoBehaviour {
         player_tile.sprite = GlobalDataHandler.Instance.tiles[GlobalDataHandler.Instance.userTile];
         winnerDisplay.gameObject.SetActive(false);
         goBackToMenu.gameObject.SetActive(false);
+        winBackGround.gameObject.SetActive(false);
+
         player.onClick.AddListener(() => {
             PtapCount++;
         });
@@ -51,8 +54,9 @@ public class MoveTilesOffline : MonoBehaviour {
                 // pop a winner window and return to menu;
                 playerGoal.gameObject.SetActive(false);
                 opponentGoal.gameObject.SetActive(false);
-                if (this.transform.position.y >= playerGoal.transform.position.y) winnerDisplay.text = "You Won :)";
-                else winnerDisplay.text = "You lost :(";
+                if (this.transform.position.y >= playerGoal.transform.position.y) winnerDisplay.text = "YOU WON";
+                else winnerDisplay.text = "YOU LOST";
+                winBackGround.gameObject.SetActive(true);
                 winnerDisplay.gameObject.SetActive(true);
                 goBackToMenu.gameObject.SetActive(true);
                 isWinnerDisplayed = true;
