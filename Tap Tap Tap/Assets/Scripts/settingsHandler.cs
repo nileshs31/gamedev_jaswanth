@@ -55,6 +55,7 @@ public class settingsHandler : MonoBehaviour {
     private void Start() {
         tileRot = GlobalDataHandler.Instance.userTile;
         currentTile.sprite = GlobalDataHandler.Instance.tiles[tileRot];
+        playerName.text = GlobalDataHandler.Instance.playerName;
         int diff = GlobalDataHandler.Instance.difficulty;
         if(diff == 2) {
             medium_btn.isOn = true;

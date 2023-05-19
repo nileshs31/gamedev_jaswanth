@@ -47,11 +47,17 @@ public class AdLoadnShow : MonoBehaviour, IUnityAdsLoadListener, IUnityAdsShowLi
     public void OnUnityAdsFailedToLoad(string _adUnitId, UnityAdsLoadError error, string message) {
         Debug.Log($"Error loading Ad Unit: {_adUnitId} - {error.ToString()} - {message}");
         // Optionally execute code if the Ad Unit fails to load, such as attempting to try again.
+        if(GlobalDataHandler.Instance.gameMode != 2) {
+            adCompleted = true;
+        }
     }
 
     public void OnUnityAdsShowFailure(string _adUnitId, UnityAdsShowError error, string message) {
         Debug.Log($"Error showing Ad Unit {_adUnitId}: {error.ToString()} - {message}");
         // Optionally execute code if the Ad Unit fails to show, such as loading another ad.
+        if (GlobalDataHandler.Instance.gameMode != 2) {
+            adCompleted = true;
+        }
     }
 
     public void OnUnityAdsShowStart(string _adUnitId) { }

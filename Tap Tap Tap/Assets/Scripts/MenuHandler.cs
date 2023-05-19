@@ -33,7 +33,12 @@ public class MenuHandler : MonoBehaviour {
     }
 
     public void multiplayerOnline() {
-        SceneManager.LoadScene("multiplayer");
+        GlobalDataHandler.Instance.gameMode = 2;
+        if(Application.internetReachability == NetworkReachability.NotReachable) {
+            // Do nothing
+        } else {
+            SceneManager.LoadScene("multiplayer");
+        }
     }
 
     public void quit() {

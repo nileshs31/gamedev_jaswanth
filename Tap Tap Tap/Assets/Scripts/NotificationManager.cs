@@ -20,9 +20,9 @@ public class NotificationManager : MonoBehaviour {
             Description = "Send notifications to remind the player to open the game!!",
         };
         AndroidNotificationCenter.RegisterNotificationChannel(channel);
-        sendNotificationAndroid("taptaptap", "Hey Haven't seen u in a while", DateTime.Now.AddSeconds(10));
+        sendNotificationAndroid("taptaptap", "Hey Haven't seen u in a while", DateTime.Today.AddHours(12));
 #elif UNITY_IOS
-        sendNotificationIos("dailyDosage", "Shashiburi daana", "Hey come play the game", "remainder", DateTime.Today.AddHours(10));
+        sendNotificationIos("dailyDosage", "Shashiburi daana", "Hey come play the game", "remainder", DateTime.Today.AddHours(12));
 #endif
     }
     // some public methods

@@ -121,4 +121,6 @@ public class MoveTilesMultiplayer : NetworkBehaviour {
         if (this.transform.position.y >= playerGoal.transform.position.y) winner.Value = 'h';
         else winner.Value = 'c';
     }
+
+    
 }
