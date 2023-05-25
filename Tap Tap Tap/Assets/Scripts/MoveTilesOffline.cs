@@ -25,6 +25,10 @@ public class MoveTilesOffline : MonoBehaviour {
     private bool isWinnerDisplayed = false;
     private float tuneFactor = 0.5f;
 
+    private void Awake() {
+        AdLoadnShow.Instance.LoadAd();
+    }
+
     private void Start() {
         player_tile.sprite = GlobalDataHandler.Instance.tiles[GlobalDataHandler.Instance.userTile];
         winnerDisplay.gameObject.SetActive(false);

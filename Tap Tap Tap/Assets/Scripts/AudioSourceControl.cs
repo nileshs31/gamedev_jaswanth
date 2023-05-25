@@ -6,6 +6,8 @@ public class AudioSourceControl : MonoBehaviour
         get;
         set;
     }
+
+
     private void Awake() {
         Debug.Log("Script : GlobalDataHandler");
 
@@ -13,10 +15,28 @@ public class AudioSourceControl : MonoBehaviour
         Instance = this;
     }
 
-    [SerializeField] private AudioSource src;
+    [SerializeField] private AudioSource srcSmall;
+    [SerializeField] private AudioSource srcLarge;
     public AudioClip[] audioClips;
+    public bool Mute;
+
+    private void Start() {
+        
+    }
 
     public void playClip(int index) {
-        src.PlayOneShot(audioClips[index]);
+        srcSmall.PlayOneShot(audioClips[index]);
+    }
+
+    public void mute() {
+        Mute = true;
+        srcLarge.mute = Mute;
+        srcSmall.mute = Mute;
+    }
+
+    public void unmute() {
+        Mute = false;
+        srcLarge.mute = Mute;
+        srcSmall.mute = Mute;
     }
 }

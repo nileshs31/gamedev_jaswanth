@@ -49,7 +49,7 @@ public class MoveTilesMultiplayer : NetworkBehaviour {
         //opponentGoal.gameObject.SetActive(true);
         if (IsHost) {
             dummyTransform = new Vector2(0f, 0f);
-            dummyGoalTransform = new Vector2(0f, 640f);
+            //dummyGoalTransform = new Vector2(0f, 640f);
         }
     }
 
@@ -85,8 +85,8 @@ public class MoveTilesMultiplayer : NetworkBehaviour {
         // Now adjust the position of the tiles according to decider
         if (IsHost) {
             this.GetComponent<RectTransform>().anchoredPosition = dummyTransform;
-            playerGoal.GetComponent<RectTransform>().anchoredPosition = new Vector2(dummyGoalTransform.x, dummyGoalTransform.y);
-            opponentGoal.GetComponent<RectTransform>().anchoredPosition = new Vector2(dummyGoalTransform.x, -1*dummyGoalTransform.y);
+            //playerGoal.GetComponent<RectTransform>().anchoredPosition = new Vector2(dummyGoalTransform.x, dummyGoalTransform.y);
+            //opponentGoal.GetComponent<RectTransform>().anchoredPosition = new Vector2(dummyGoalTransform.x, -1*dummyGoalTransform.y);
             ClientTileUpdateClientRpc(dummyTransform,dummyGoalTransform);
             checkGameEnd();
         }
@@ -95,7 +95,7 @@ public class MoveTilesMultiplayer : NetworkBehaviour {
     [ServerRpc(RequireOwnership = false)]
     private void PosUpdateServerRpc(float clickrate,int dir) {
         dummyTransform += Vector2.up * clickrate * strength * dir;
-        dummyGoalTransform += Vector2.down * speed * Time.deltaTime;
+        //dummyGoalTransform += Vector2.down * speed * Time.deltaTime;
     }
 
     //[ServerRpc(RequireOwnership = false)]

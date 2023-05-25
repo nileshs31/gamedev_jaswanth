@@ -11,6 +11,8 @@ public class settingsHandler : MonoBehaviour {
     [SerializeField] Button selectTile;
     [SerializeField] Image currentTile;
     [SerializeField] Button left, right;
+    [SerializeField] Button sound;
+    [SerializeField] TMP_Text sound_txt;
     int tileRot;
 
     private void Awake() {
@@ -31,6 +33,9 @@ public class settingsHandler : MonoBehaviour {
             hard_btn.onValueChanged.AddListener((bool value) => {
                 hard();
             });
+        }
+        if (sound != null) {
+            sound.onClick.AddListener(soundToggle);
         }
         playerName.onSubmit.AddListener((string value) => {
             Debug.Log(value);
@@ -108,4 +113,14 @@ public class settingsHandler : MonoBehaviour {
         }
     }
 
+    private void soundToggle() {
+        if (AudioSourceControl.Instance.Mute) {
+            AudioSourceControl.Instance.unmute();
+            sound_txt.text = "sound: on";
+        }
+        else {
+            AudioSourceControl.Instance.mute();
+            sound_txt.text = "sound: off";
+        }
+    }
 }
