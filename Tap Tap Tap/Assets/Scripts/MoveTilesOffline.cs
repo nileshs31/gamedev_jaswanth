@@ -19,7 +19,7 @@ public class MoveTilesOffline : MonoBehaviour {
     private int PtapCount = 0;
     private int OtapCount = 0;
 
-    private float strength = 0.4f;
+    [SerializeField]private float strength = 0.4f;
     private float updateTickRate;
     private float dif;
     private bool isWinnerDisplayed = false;
