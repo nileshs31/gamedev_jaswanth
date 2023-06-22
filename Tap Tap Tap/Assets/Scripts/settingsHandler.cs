@@ -69,6 +69,14 @@ public class settingsHandler : MonoBehaviour {
         } else if (diff == 1) {
             easy_btn.isOn = true;
         }
+        if (GlobalDataHandler.Instance.sound) {
+            AudioSourceControl.Instance.unmute();
+            sound_txt.text = "sound: on";
+        }
+        else {
+            AudioSourceControl.Instance.mute();
+            sound_txt.text = "sound: off";
+        }
     }
 
     private void back() {
@@ -117,10 +125,12 @@ public class settingsHandler : MonoBehaviour {
         if (AudioSourceControl.Instance.Mute) {
             AudioSourceControl.Instance.unmute();
             sound_txt.text = "sound: on";
+            GlobalDataHandler.Instance.sound = true;
         }
         else {
             AudioSourceControl.Instance.mute();
             sound_txt.text = "sound: off";
+            GlobalDataHandler.Instance.sound = false;
         }
     }
 }

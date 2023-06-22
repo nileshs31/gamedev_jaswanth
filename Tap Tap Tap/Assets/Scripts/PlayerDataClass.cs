@@ -7,11 +7,13 @@ public class PlayerDataClass{
     public int Difficulty = 1; // Use this in local scene in cpu mode to adjust difficulty;
     public string PlayerName = "DefaultName";
     public int UserTile = 0;
-    public PlayerDataClass(int gm,int diff, int tileNum,string name) {
+    public bool Sound = false;
+    public PlayerDataClass(int gm,int diff, int tileNum,string name,bool snd) {
         this.GameMode = gm;
         this.Difficulty = diff;
         this.UserTile = tileNum;
         this.PlayerName = name;
+        this.Sound = snd;
     }
     public PlayerDataClass() { }
 }

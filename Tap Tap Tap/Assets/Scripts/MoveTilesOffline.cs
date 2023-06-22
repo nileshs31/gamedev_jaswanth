@@ -14,6 +14,11 @@ public class MoveTilesOffline : MonoBehaviour {
     [SerializeField] private Image player_tile;
     [SerializeField] private Image winBackGround;
 
+    // player labels for gamemode1 i.e, 1v1;
+    [SerializeField] private TMP_Text p1;
+    [SerializeField] private TMP_Text p2;
+
+
     private float maxTickDelay = 0.5f;
 
     private int PtapCount = 0;
@@ -42,12 +47,17 @@ public class MoveTilesOffline : MonoBehaviour {
         if (gdh.gameMode == 0) {
             // copy start of vsCPU
             dif = gdh.difficulty*tuneFactor;
+            opponent.enabled = false;
         } else if (gdh.gameMode == 1) {
             // copy start of vsLocal
             dif = 1;
             opponent.onClick.AddListener(() => {
                 OtapCount++;
             });
+
+            // set active p1 and p2 lables
+            p1.gameObject.SetActive(true);
+            p2.gameObject.SetActive(true);
         }
     }
 
@@ -58,8 +68,13 @@ public class MoveTilesOffline : MonoBehaviour {
                 // pop a winner window and return to menu;
                 playerGoal.gameObject.SetActive(false);
                 opponentGoal.gameObject.SetActive(false);
-                if (this.transform.position.y >= playerGoal.transform.position.y) winnerDisplay.text = "YOU WON";
-                else winnerDisplay.text = "YOU LOST";
+                if(gdh.gameMode == 0){
+                    if (this.transform.position.y >= playerGoal.transform.position.y) winnerDisplay.text = "YOU WON";
+                    else winnerDisplay.text = "YOU LOST";
+                } else if (gdh.gameMode == 1){
+                    if (this.transform.position.y >= playerGoal.transform.position.y) winnerDisplay.text = "P1 WON";
+                    else winnerDisplay.text = "P2 WON";
+                }
                 winBackGround.gameObject.SetActive(true);
                 winnerDisplay.gameObject.SetActive(true);
                 goBackToMenu.gameObject.SetActive(true);

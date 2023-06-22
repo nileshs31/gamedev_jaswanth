@@ -7,7 +7,7 @@ public class AdLoadnShow : MonoBehaviour, IUnityAdsLoadListener, IUnityAdsShowLi
     [SerializeField] string _androidAdUnitId = "Interstitial_Android";
     [SerializeField] string _iOsAdUnitId = "Interstitial_iOS";
     string _adUnitId;
-    bool adCompleted = false;
+    bool adCompleted = true;
 
     public bool isAdCompleted() {
         return adCompleted;
@@ -26,8 +26,13 @@ public class AdLoadnShow : MonoBehaviour, IUnityAdsLoadListener, IUnityAdsShowLi
     // Load content to the Ad Unit:
     public void LoadAd() {
         // IMPORTANT! Only load content AFTER initialization (in this example, initialization is handled in a different script).
-        Debug.Log("Loading Ad: " + _adUnitId);
-        Advertisement.Load(_adUnitId, this);
+        adCompleted = false;
+        if(Random.Range(0f,1f) < 0.33f){
+            Debug.Log("Loading Ad: " + _adUnitId);
+            Advertisement.Load(_adUnitId, this);
+        }else{
+            adCompleted = true;
+        }
     }
 
     // Show the loaded content in the Ad Unit:
@@ -41,7 +46,9 @@ public class AdLoadnShow : MonoBehaviour, IUnityAdsLoadListener, IUnityAdsShowLi
     // Implement Load Listener and Show Listener interface methods: 
     public void OnUnityAdsAdLoaded(string adUnitId) {
         // Optionally execute code if the Ad Unit successfully loads content.
-        ShowAd();
+        if(!adCompleted){
+            ShowAd();
+        }
     }
 
     public void OnUnityAdsFailedToLoad(string _adUnitId, UnityAdsLoadError error, string message) {

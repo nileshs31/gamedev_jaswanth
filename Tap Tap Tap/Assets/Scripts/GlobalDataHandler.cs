@@ -36,6 +36,7 @@ public class GlobalDataHandler : MonoBehaviour {
     // alternatively one could add some purchasing of tiles thing and unlock them.
     // although then we need to setup up players login and data in server.
     public int userTile = 0; // set 0th sprite to blue (default).
+    public bool sound = false;
 
     // save data offline
     public void saveData() {
@@ -64,6 +65,7 @@ public class GlobalDataHandler : MonoBehaviour {
             this.userTile = pdc.UserTile;
             this.gameMode = pdc.GameMode;
             this.difficulty = pdc.Difficulty;
+            this.sound = pdc.Sound;
         }
         catch (ArgumentException e) {
             Debug.Log(e);
@@ -75,6 +77,6 @@ public class GlobalDataHandler : MonoBehaviour {
     }
 
     private PlayerDataClass convertThis() {
-        return new PlayerDataClass(this.gameMode, this.difficulty, this.userTile, this.playerName);
+        return new PlayerDataClass(this.gameMode, this.difficulty, this.userTile, this.playerName, this.sound);
     }
 }

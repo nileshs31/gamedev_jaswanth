@@ -24,6 +24,7 @@ public class MoveTilesMultiplayer : NetworkBehaviour {
     private float speed = 15f;
 
     private void Start() {
+        
         AdLoadnShow.Instance.LoadAd();
         isGameEnd = new NetworkVariable<bool>(false, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
         winner = new NetworkVariable<char>(default, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);

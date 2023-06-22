@@ -13,7 +13,6 @@ public class MenuHandler : MonoBehaviour {
     [SerializeField] private Button settings_btn;
 
     private void Start() {
-
         settings.gameObject.SetActive(false);
         settings_btn.onClick.AddListener(settings_btn_fn);
         localvs.onClick.AddListener(localVs);
@@ -47,5 +46,6 @@ public class MenuHandler : MonoBehaviour {
 
     public void settings_btn_fn() {
         settings.gameObject.SetActive(true);
+        GameToastHandler.Instance.sendToast("settings here!");
     }
 }

@@ -21,7 +21,9 @@ public class AudioSourceControl : MonoBehaviour
     public bool Mute;
 
     private void Start() {
-        
+        if(!GlobalDataHandler.Instance.sound){
+            mute();
+        }
     }
 
     public void playClip(int index) {
