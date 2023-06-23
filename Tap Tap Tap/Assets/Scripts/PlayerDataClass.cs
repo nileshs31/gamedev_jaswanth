@@ -8,12 +8,14 @@ public class PlayerDataClass{
     public string PlayerName = "DefaultName";
     public int UserTile = 0;
     public bool Sound = false;
-    public PlayerDataClass(int gm,int diff, int tileNum,string name,bool snd) {
+    public bool FirstTime = true;
+    public PlayerDataClass(int gm,int diff, int tileNum,string name,bool snd, bool ft) {
         this.GameMode = gm;
         this.Difficulty = diff;
         this.UserTile = tileNum;
         this.PlayerName = name;
         this.Sound = snd;
+        this.FirstTime = ft;
     }
     public PlayerDataClass() { }
 }

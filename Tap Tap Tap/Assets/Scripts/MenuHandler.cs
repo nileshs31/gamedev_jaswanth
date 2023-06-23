@@ -11,6 +11,7 @@ public class MenuHandler : MonoBehaviour {
     [SerializeField] private Button mulitplayer;
     [SerializeField] private GameObject settings;
     [SerializeField] private Button settings_btn;
+    [SerializeField] private GameObject nameChangePanel;
 
     private void Start() {
         settings.gameObject.SetActive(false);
@@ -19,6 +20,9 @@ public class MenuHandler : MonoBehaviour {
         quit_btn.onClick.AddListener(quit);
         vscpu.onClick.AddListener(vsCpu);
         mulitplayer.onClick.AddListener(multiplayerOnline);
+        if(GlobalDataHandler.Instance.firtTime){
+            nameChangePanel.SetActive(true);
+        }
     }
 
     public void localVs() {

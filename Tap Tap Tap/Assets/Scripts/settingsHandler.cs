@@ -13,6 +13,7 @@ public class settingsHandler : MonoBehaviour {
     [SerializeField] Button left, right;
     [SerializeField] Button sound;
     [SerializeField] TMP_Text sound_txt;
+    [SerializeField] GameObject changeNamePanel;
     int tileRot;
 
     private void Awake() {
@@ -37,9 +38,12 @@ public class settingsHandler : MonoBehaviour {
         if (sound != null) {
             sound.onClick.AddListener(soundToggle);
         }
-        playerName.onSubmit.AddListener((string value) => {
-            Debug.Log(value);
-            GlobalDataHandler.Instance.playerName = value;
+        // playerName.onSubmit.AddListener((string value) => {
+        //     Debug.Log(value);
+        //     GlobalDataHandler.Instance.playerName = value;
+        // });
+        playerName.onSelect.AddListener((string value)=>{
+            changeNamePanel.SetActive(true);
         });
 
         selectTile.onClick.AddListener(() => {
@@ -132,5 +136,9 @@ public class settingsHandler : MonoBehaviour {
             sound_txt.text = "sound: off";
             GlobalDataHandler.Instance.sound = false;
         }
+    }
+
+    private void OnEnable() {
+        playerName.text = GlobalDataHandler.Instance.playerName;
     }
 }
