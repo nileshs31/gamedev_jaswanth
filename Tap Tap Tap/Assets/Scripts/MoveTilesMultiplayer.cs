@@ -20,7 +20,7 @@ public class MoveTilesMultiplayer : NetworkBehaviour {
     private float strength = 0.4f;
     private int tapCount = 0;
     private Vector2 dummyTransform;
-    private Vector2 dummyGoalTransform;
+    // private Vector2 dummyGoalTransform;
     private float speed = 15f;
 
     private void Start() {
@@ -88,7 +88,7 @@ public class MoveTilesMultiplayer : NetworkBehaviour {
             this.GetComponent<RectTransform>().anchoredPosition = dummyTransform;
             //playerGoal.GetComponent<RectTransform>().anchoredPosition = new Vector2(dummyGoalTransform.x, dummyGoalTransform.y);
             //opponentGoal.GetComponent<RectTransform>().anchoredPosition = new Vector2(dummyGoalTransform.x, -1*dummyGoalTransform.y);
-            ClientTileUpdateClientRpc(dummyTransform,dummyGoalTransform);
+            ClientTileUpdateClientRpc(dummyTransform);
             checkGameEnd();
         }
     }
@@ -105,11 +105,11 @@ public class MoveTilesMultiplayer : NetworkBehaviour {
     //}
 
     [ClientRpc]
-    private void ClientTileUpdateClientRpc(Vector2 pos, Vector2 goalpos) {
+    private void ClientTileUpdateClientRpc(Vector2 pos) {
         if (IsHost) return;
         this.GetComponent<RectTransform>().anchoredPosition = new Vector2(pos.x,-1*pos.y);
-        playerGoal.GetComponent<RectTransform>().anchoredPosition = new Vector2(goalpos.x, goalpos.y);
-        opponentGoal.GetComponent<RectTransform>().anchoredPosition = new Vector2(goalpos.x, -1*goalpos.y);
+        // playerGoal.GetComponent<RectTransform>().anchoredPosition = new Vector2(goalpos.x, goalpos.y);
+        // opponentGoal.GetComponent<RectTransform>().anchoredPosition = new Vector2(goalpos.x, -1*goalpos.y);
 
     }
 
