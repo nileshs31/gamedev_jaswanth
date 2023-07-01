@@ -5051,6 +5051,10 @@ PrefabInstance:
       value: 0.01
       objectReference: {fileID: 0}
     - target: {fileID: -2202453924603465754, guid: d93e43eb28018f04bbf0fec5e07f0594, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -2202453924603465754, guid: d93e43eb28018f04bbf0fec5e07f0594, type: 3}
       propertyPath: playerGoal
       value: 
       objectReference: {fileID: 812024410}
@@ -5074,6 +5078,10 @@ PrefabInstance:
       propertyPath: winnerDisplay
       value: 
       objectReference: {fileID: 765342670}
+    - target: {fileID: -2202453924603465754, guid: d93e43eb28018f04bbf0fec5e07f0594, type: 3}
+      propertyPath: multiplayerTiles
+      value: 
+      objectReference: {fileID: 1392626257}
     - target: {fileID: -262358598321435021, guid: d93e43eb28018f04bbf0fec5e07f0594, type: 3}
       propertyPath: GlobalObjectIdHash
       value: 3305462324
@@ -5192,7 +5200,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6087783514040254970, guid: d93e43eb28018f04bbf0fec5e07f0594, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 6087783514040254970, guid: d93e43eb28018f04bbf0fec5e07f0594, type: 3}
       propertyPath: m_AnchorMin.x
@@ -5200,7 +5208,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6087783514040254970, guid: d93e43eb28018f04bbf0fec5e07f0594, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 6087783514040254970, guid: d93e43eb28018f04bbf0fec5e07f0594, type: 3}
       propertyPath: m_SizeDelta.x
@@ -5208,7 +5216,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6087783514040254970, guid: d93e43eb28018f04bbf0fec5e07f0594, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 0
+      value: 1280
       objectReference: {fileID: 0}
     - target: {fileID: 6087783514040254970, guid: d93e43eb28018f04bbf0fec5e07f0594, type: 3}
       propertyPath: m_LocalPosition.x
@@ -5681,7 +5689,7 @@ MonoBehaviour:
   m_ScaleFactor: 1
   m_ReferenceResolution: {x: 720, y: 1280}
   m_ScreenMatchMode: 0
-  m_MatchWidthOrHeight: 0.5
+  m_MatchWidthOrHeight: 1
   m_PhysicalUnit: 3
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96

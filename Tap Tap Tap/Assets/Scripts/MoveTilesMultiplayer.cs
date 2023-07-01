@@ -8,6 +8,7 @@ public class MoveTilesMultiplayer : NetworkBehaviour {
     [SerializeField] private Button player;
     //[SerializeField] private GameObject deciderPrefab;
     private NetworkVariable<bool> isGameEnd;
+    private NetworkVariable<bool> isGameStart; // this is used to wait for all the player to connect to the game;
     private NetworkVariable<char> winner;
     [SerializeField] private GameObject playerGoal;
     [SerializeField] private GameObject opponentGoal;
@@ -20,14 +21,19 @@ public class MoveTilesMultiplayer : NetworkBehaviour {
     private float strength = 0.4f;
     private int tapCount = 0;
     private Vector2 dummyTransform;
+    private float screenScaleFactor = 1;
     // private Vector2 dummyGoalTransform;
     private float speed = 15f;
 
     private void Start() {
-        
+        // screenScaleFactor = Screen.height/1280f;
+        Debug.Log(NetworkManager.Singleton.IsHost);
+        Debug.Log(NetworkManager.Singleton.IsClient);
+        Debug.Log(NetworkManager.Singleton.IsConnectedClient);
         AdLoadnShow.Instance.LoadAd();
         isGameEnd = new NetworkVariable<bool>(false, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
         winner = new NetworkVariable<char>(default, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+        isGameStart = new NetworkVariable<bool>(false, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
         winCond.SetActive(false); 
         //playerGoal.gameObject.SetActive(false);
         //opponentGoal.gameObject.SetActive(false);
@@ -42,9 +48,9 @@ public class MoveTilesMultiplayer : NetworkBehaviour {
 
     public override void OnNetworkSpawn() {
         
-        player.onClick.AddListener(() => {
-            tapCount++;
-        });
+        // player.onClick.AddListener(() => {
+        //     tapCount++;
+        // });
         winCond.SetActive(true);
         //playerGoal.gameObject.SetActive(true);
         //opponentGoal.gameObject.SetActive(true);
@@ -52,12 +58,20 @@ public class MoveTilesMultiplayer : NetworkBehaviour {
             dummyTransform = new Vector2(0f, 0f);
             //dummyGoalTransform = new Vector2(0f, 640f);
         }
+
+        NetworkManager.Singleton.OnClientConnectedCallback += (ulong a) =>{
+            if(!isGameStart.Value && IsHost && NetworkManager.Singleton.ConnectedClientsList.Count == 2) isGameStart.Value = true;
+            tapCount = 0;
+            player.onClick.AddListener(() => {
+                tapCount++;
+            });
+        };
     }
-
-
 
     private void Update() {
         if (!AdLoadnShow.Instance.isAdCompleted()) return;
+        // if (!isGameStart.Value && IsHost && NetworkManager.Singleton.ConnectedClientsList.Count == 2) isGameStart.Value = true;
+        if (!isGameStart.Value) return;
         if (isGameEnd.Value) {
             if (!isWinnerDisplayed) {
                 winCond.SetActive(false);
@@ -71,8 +85,10 @@ public class MoveTilesMultiplayer : NetworkBehaviour {
                 goBackToMenu.gameObject.SetActive(true);
                 isWinnerDisplayed = true;
             }
+            // NetworkManager.Singleton.DisconnectClient(NetworkManager.Singleton.LocalClientId);
             return;
         }
+        // screenScaleFactor = Screen.height/1280f;
         if (IsClient && !IsHost) {
             float clickrate = tapCount / Time.deltaTime;
             PosUpdateServerRpc(clickrate,-1);
@@ -85,7 +101,7 @@ public class MoveTilesMultiplayer : NetworkBehaviour {
 
         // Now adjust the position of the tiles according to decider
         if (IsHost) {
-            this.GetComponent<RectTransform>().anchoredPosition = dummyTransform;
+            this.GetComponent<RectTransform>().anchoredPosition = dummyTransform * screenScaleFactor;
             //playerGoal.GetComponent<RectTransform>().anchoredPosition = new Vector2(dummyGoalTransform.x, dummyGoalTransform.y);
             //opponentGoal.GetComponent<RectTransform>().anchoredPosition = new Vector2(dummyGoalTransform.x, -1*dummyGoalTransform.y);
             ClientTileUpdateClientRpc(dummyTransform);
@@ -107,7 +123,7 @@ public class MoveTilesMultiplayer : NetworkBehaviour {
     [ClientRpc]
     private void ClientTileUpdateClientRpc(Vector2 pos) {
         if (IsHost) return;
-        this.GetComponent<RectTransform>().anchoredPosition = new Vector2(pos.x,-1*pos.y);
+        this.GetComponent<RectTransform>().anchoredPosition = new Vector2(pos.x,-1*pos.y*screenScaleFactor);
         // playerGoal.GetComponent<RectTransform>().anchoredPosition = new Vector2(goalpos.x, goalpos.y);
         // opponentGoal.GetComponent<RectTransform>().anchoredPosition = new Vector2(goalpos.x, -1*goalpos.y);
 
@@ -115,11 +131,13 @@ public class MoveTilesMultiplayer : NetworkBehaviour {
 
     public void checkGameEnd() {
         if (!IsHost) return;
-        isGameEnd.Value = (this.transform.position.y >= playerGoal.transform.position.y) || (this.transform.position.y <= opponentGoal.transform.position.y);
-        
+
+        isGameEnd.Value =  isGameEnd.Value ||(this.transform.position.y >= playerGoal.transform.position.y) || (this.transform.position.y <= opponentGoal.transform.position.y);
+        isGameEnd.Value = isGameEnd.Value || (isGameStart.Value && NetworkManager.Singleton.ConnectedClientsList.Count < 2);
+
         if (!isGameEnd.Value) return;
         
-        if (this.transform.position.y >= playerGoal.transform.position.y) winner.Value = 'h';
+        if (this.transform.position.y >= playerGoal.transform.position.y && NetworkManager.Singleton.ConnectedClientsList.Count == 2) winner.Value = 'h';
         else winner.Value = 'c';
     }
 
