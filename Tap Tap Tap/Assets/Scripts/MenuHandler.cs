@@ -39,6 +39,7 @@ public class MenuHandler : MonoBehaviour {
         GlobalDataHandler.Instance.gameMode = 2;
         if(Application.internetReachability == NetworkReachability.NotReachable) {
             // Do nothing
+		GameToastHandler.Instance.sendToast("Check your Internet");
         } else {
             SceneManager.LoadScene("multiplayer");
         }

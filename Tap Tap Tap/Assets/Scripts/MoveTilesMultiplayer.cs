@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using Unity.Netcode;
 using TMPro;
 using UnityEngine.SceneManagement;
+using Unity.Services.Lobbies;
 
 public class MoveTilesMultiplayer : NetworkBehaviour {
     [SerializeField] private Button player;
@@ -10,12 +11,13 @@ public class MoveTilesMultiplayer : NetworkBehaviour {
     private NetworkVariable<bool> isGameEnd;
     private NetworkVariable<bool> isGameStart; // this is used to wait for all the player to connect to the game;
     private NetworkVariable<char> winner;
+    private NetworkVariable<float> countDownTimer;
     [SerializeField] private GameObject playerGoal;
     [SerializeField] private GameObject opponentGoal;
     [SerializeField] private TMP_Text winnerDisplay;
-    [SerializeField] private Button goBackToMenu;
     [SerializeField] private GameObject winCond;
     [SerializeField] private Image winBackGround;
+    [SerializeField] private TMP_Text timerDisplay;
     private bool isWinnerDisplayed = false;
 
     private float strength = 0.4f;
@@ -27,6 +29,7 @@ public class MoveTilesMultiplayer : NetworkBehaviour {
 
     private void Start() {
         // screenScaleFactor = Screen.height/1280f;
+        
         Debug.Log(NetworkManager.Singleton.IsHost);
         Debug.Log(NetworkManager.Singleton.IsClient);
         Debug.Log(NetworkManager.Singleton.IsConnectedClient);
@@ -34,16 +37,13 @@ public class MoveTilesMultiplayer : NetworkBehaviour {
         isGameEnd = new NetworkVariable<bool>(false, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
         winner = new NetworkVariable<char>(default, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
         isGameStart = new NetworkVariable<bool>(false, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+        countDownTimer = new NetworkVariable<float>(60f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
         winCond.SetActive(false); 
         //playerGoal.gameObject.SetActive(false);
         //opponentGoal.gameObject.SetActive(false);
         winnerDisplay.gameObject.SetActive(false);
-        goBackToMenu.gameObject.SetActive(false);
         winBackGround.gameObject.SetActive(false);
-
-        goBackToMenu.onClick.AddListener(() => {
-            SceneManager.LoadScene("Menu");
-        });
+        timerDisplay.gameObject.SetActive(false);
     }
 
     public override void OnNetworkSpawn() {
@@ -66,11 +66,12 @@ public class MoveTilesMultiplayer : NetworkBehaviour {
                 tapCount++;
             });
         };
+        timerDisplay.gameObject.SetActive(true);
+        timerDisplay.text = "" + Mathf.Floor(countDownTimer.Value);
     }
 
     private void Update() {
         if (!AdLoadnShow.Instance.isAdCompleted()) return;
-        // if (!isGameStart.Value && IsHost && NetworkManager.Singleton.ConnectedClientsList.Count == 2) isGameStart.Value = true;
         if (!isGameStart.Value) return;
         if (isGameEnd.Value) {
             if (!isWinnerDisplayed) {
@@ -82,7 +83,6 @@ public class MoveTilesMultiplayer : NetworkBehaviour {
                 else winnerDisplay.text = "YOU LOST";
                 winBackGround.gameObject.SetActive(true);
                 winnerDisplay.gameObject.SetActive(true);
-                goBackToMenu.gameObject.SetActive(true);
                 isWinnerDisplayed = true;
             }
             // NetworkManager.Singleton.DisconnectClient(NetworkManager.Singleton.LocalClientId);
@@ -107,6 +107,15 @@ public class MoveTilesMultiplayer : NetworkBehaviour {
             ClientTileUpdateClientRpc(dummyTransform);
             checkGameEnd();
         }
+
+        // Update timer
+        if(IsHost){
+            countDownTimer.Value -= Time.deltaTime;
+            if(countDownTimer.Value < 0){
+                countDownTimer.Value = 0;
+            }
+        }
+        timerDisplay.text = "" + Mathf.Floor(countDownTimer.Value);
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -134,6 +143,13 @@ public class MoveTilesMultiplayer : NetworkBehaviour {
 
         isGameEnd.Value =  isGameEnd.Value ||(this.transform.position.y >= playerGoal.transform.position.y) || (this.transform.position.y <= opponentGoal.transform.position.y);
         isGameEnd.Value = isGameEnd.Value || (isGameStart.Value && NetworkManager.Singleton.ConnectedClientsList.Count < 2);
+
+        if(countDownTimer.Value < 10e-7){
+            isGameEnd.Value = true;
+            if(this.transform.position.y > 0) winner.Value = 'h';
+            else winner.Value = 'c';
+            return;
+        }
 
         if (!isGameEnd.Value) return;
         

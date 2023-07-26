@@ -15,6 +15,9 @@ using UnityEngine.UI;
 
 public class ProductionLobbyManager : MonoBehaviour{
     // public
+        // For host disconnected Checks!
+            // public bool isGameStarted = false;
+            // public bool isGameEnded = false;
 
     // private serializable
         // UI screens for different Activities
@@ -26,7 +29,7 @@ public class ProductionLobbyManager : MonoBehaviour{
             [SerializeField] Button StartGame;
             [SerializeField] GameObject Waiting;
             [SerializeField] TMP_Text VersusLabel;
-            [SerializeField] TMP_Text LobbyCode;
+            [SerializeField] TMP_Text LobbyCode;        
 
     [SerializeField] Image opponent_tile;
     [SerializeField] Image player_tile;
@@ -35,8 +38,8 @@ public class ProductionLobbyManager : MonoBehaviour{
     // private
     bool isLobbyPrivate = false;
     bool loadedTiles = false;
-    Lobby hostLobby;
-    Lobby joinedLobby;
+    Lobby hostLobby = null;
+    Lobby joinedLobby = null;
     float heartbeatTimer = 15f;
     float pollingTimer = 1.1f;
     float waitingTimer = 0f;
@@ -106,7 +109,7 @@ public class ProductionLobbyManager : MonoBehaviour{
                     if(hostLobby == null) {
                         JoinRelay(joinedLobby.Data["KEY_START_GAME"].Value);
                     }
-                    joinedLobby = null;
+                    // joinedLobby = null;
                     DisableUI();
                 }
             }
@@ -198,6 +201,17 @@ public class ProductionLobbyManager : MonoBehaviour{
                 {"userTile", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member,""+GlobalDataHandler.Instance.userTile) }
             }
         };
+    }
+    public Lobby getConnectedLobby(){
+        return joinedLobby;
+    }
+    public bool isLobbyHost() {
+        if(hostLobby!=null) return true;
+        else return false;
+    }
+    public bool isHostDisconnected(){
+        if(hostLobby==null && joinedLobby!=null) return joinedLobby.Players.Count < joinedLobby.MaxPlayers;
+        else return false;
     }
 
     // Traverse through multiplayer UI;
